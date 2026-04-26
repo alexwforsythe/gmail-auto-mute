@@ -29,14 +29,12 @@ function refreshHomepage(
   e: GoogleAppsScript.Addons.EventObject,
   notificationText?: string,
 ) {
-  const { settings } = loadProps();
+  const props = loadProps();
   const res = CardService.newActionResponseBuilder()
     .setNavigation(
       CardService.newNavigation()
         .popToRoot()
-        .updateCard(
-          buildHomepageCard(settings, e.commonEventObject.userLocale),
-        ),
+        .updateCard(buildHomepageCard(props, e.commonEventObject.userLocale)),
     )
     .setStateChanged(true);
 

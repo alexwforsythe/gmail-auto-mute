@@ -5,7 +5,7 @@ import {
   defaultEvaluationIntervalHours,
   loadProps,
   saveSettings,
-  type Settings,
+  type Properties,
 } from './properties';
 
 const helpLink =
@@ -13,7 +13,7 @@ const helpLink =
 const evaluationIntervalsHours = [1, 6, defaultEvaluationIntervalHours, 24];
 
 export function buildHomepageCard(
-  settings: Settings,
+  { settings, state }: Properties,
   userLocale: string | undefined,
 ) {
   // Label selection
@@ -45,100 +45,112 @@ export function buildHomepageCard(
     );
   });
 
-  return (
-    CardService.newCardBuilder()
-      .setHeader(CardService.newCardHeader().setTitle('Settings'))
-      .addCardAction(
-        CardService.newCardAction()
-          .setText('Help')
-          .setOpenLink(CardService.newOpenLink().setUrl(helpLink)),
-      )
-      .addCardAction(
-        CardService.newCardAction()
-          .setText('Clear state')
-          .setOnClickAction(
-            CardService.newAction().setFunctionName(clearStateAction.name),
-          ),
-      )
-      .addSection(
-        CardService.newCardSection()
-          .setHeader('Filters')
-          .addWidget(labelSelect)
-          .addWidget(
-            CardService.newDecoratedText()
-              .setText('Exclude read messages')
-              .setSwitchControl(
-                CardService.newSwitch()
-                  .setFieldName('excludeRead')
-                  .setValue('true')
-                  .setSelected(settings.excludeRead)
-                  .setOnChangeAction(
-                    CardService.newAction().setFunctionName(
-                      handleChangeExcludeRead.name,
-                    ),
+  return CardService.newCardBuilder()
+    .setHeader(CardService.newCardHeader().setTitle('Settings'))
+    .addCardAction(
+      CardService.newCardAction()
+        .setText('Help')
+        .setOpenLink(CardService.newOpenLink().setUrl(helpLink)),
+    )
+    .addCardAction(
+      CardService.newCardAction()
+        .setText('Clear state')
+        .setOnClickAction(
+          CardService.newAction().setFunctionName(clearStateAction.name),
+        ),
+    )
+    .addSection(
+      CardService.newCardSection()
+        .setHeader('Filters')
+        .addWidget(labelSelect)
+        .addWidget(
+          CardService.newDecoratedText()
+            .setText('Exclude read messages')
+            .setSwitchControl(
+              CardService.newSwitch()
+                .setFieldName('excludeRead')
+                .setValue('true')
+                .setSelected(settings.excludeRead)
+                .setOnChangeAction(
+                  CardService.newAction().setFunctionName(
+                    handleChangeExcludeRead.name,
                   ),
-              ),
-          )
-          .addWidget(
-            CardService.newDecoratedText()
-              .setText('Exclude important messages')
-              .setSwitchControl(
-                CardService.newSwitch()
-                  .setFieldName('excludeImportant')
-                  .setValue('true')
-                  .setSelected(settings.excludeImportant)
-                  .setOnChangeAction(
-                    CardService.newAction().setFunctionName(
-                      handleChangeExcludeImportant.name,
-                    ),
-                  ),
-              ),
-          ),
-      )
-      .addSection(
-        CardService.newCardSection()
-          .setHeader('Cleanup Schedule')
-          .addWidget(
-            CardService.newDecoratedText()
-              .setText('Enabled')
-              .setSwitchControl(
-                CardService.newSwitch()
-                  .setFieldName('enableTimerTrigger')
-                  .setValue('true')
-                  .setSelected(settings.enableTimerTrigger)
-                  .setOnChangeAction(
-                    CardService.newAction().setFunctionName(
-                      handleChangeEnableTimerTrigger.name,
-                    ),
-                  ),
-              ),
-          )
-          .addWidget(intervalSelect)
-          .addWidget(
-            CardService.newButtonSet().addButton(
-              CardService.newTextButton()
-                .setText('Run Now')
-                .setOnClickAction(
-                  CardService.newAction()
-                    .setFunctionName(manualTriggerAction.name)
-                    .addRequiredWidget('labelId'),
                 ),
             ),
+        )
+        .addWidget(
+          CardService.newDecoratedText()
+            .setText('Exclude important messages')
+            .setSwitchControl(
+              CardService.newSwitch()
+                .setFieldName('excludeImportant')
+                .setValue('true')
+                .setSelected(settings.excludeImportant)
+                .setOnChangeAction(
+                  CardService.newAction().setFunctionName(
+                    handleChangeExcludeImportant.name,
+                  ),
+                ),
+            ),
+        ),
+    )
+    .addSection(
+      CardService.newCardSection()
+        .setHeader('Cleanup Schedule')
+        .addWidget(
+          CardService.newDecoratedText()
+            .setText('Enabled')
+            .setSwitchControl(
+              CardService.newSwitch()
+                .setFieldName('enableTimerTrigger')
+                .setValue('true')
+                .setSelected(settings.enableTimerTrigger)
+                .setOnChangeAction(
+                  CardService.newAction().setFunctionName(
+                    handleChangeEnableTimerTrigger.name,
+                  ),
+                ),
+            ),
+        )
+        .addWidget(intervalSelect),
+    )
+    .addSection(
+      CardService.newCardSection()
+        .setHeader('Statistics')
+        .addWidget(
+          CardService.newKeyValue()
+            .setTopLabel('Last run')
+            .setContent(
+              state.lastRunMs
+                ? new Date(state.lastRunMs).toLocaleString(userLocale)
+                : 'never',
+            ),
+        )
+        .addWidget(
+          CardService.newKeyValue()
+            .setTopLabel('Archived in last run')
+            .setContent(
+              state.lastRunMs ? state.lastRunArchivedCount.toString() : 'n/a',
+            ),
+        )
+        .addWidget(
+          CardService.newKeyValue()
+            .setTopLabel('Archived since install')
+            .setContent(state.totalArchivedCount.toString()),
+        ),
+    )
+    .setFixedFooter(
+      CardService.newFixedFooter().setPrimaryButton(
+        CardService.newTextButton()
+          .setText('Run now')
+          .setOnClickAction(
+            CardService.newAction()
+              .setFunctionName(manualTriggerAction.name)
+              .addRequiredWidget('labelId'),
           ),
-      )
-      // .setFixedFooter(
-      //   CardService.newFixedFooter().setPrimaryButton(
-      //     CardService.newTextButton()
-      //       .setText('Run now')
-      //       .setOnClickAction(
-      //         CardService.newAction()
-      //           .setFunctionName(manualTriggerAction.name)
-      //           .addRequiredWidget('labelId'),
-      //       ),
-      //   ),
-      // )
-      .build()
-  );
+      ),
+    )
+    .build();
 }
 
 function handleChangeLabelId(
@@ -228,11 +240,11 @@ function buildHomepageResponse(
   userLocale: string | undefined,
   notificationText?: string,
 ): GoogleAppsScript.Card_Service.ActionResponse {
-  const { settings } = loadProps();
+  const props = loadProps();
   const res = CardService.newActionResponseBuilder().setNavigation(
     CardService.newNavigation()
       .popToRoot()
-      .updateCard(buildHomepageCard(settings, userLocale)),
+      .updateCard(buildHomepageCard(props, userLocale)),
   );
   if (notificationText) {
     res.setNotification(

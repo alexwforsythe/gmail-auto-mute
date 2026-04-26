@@ -17,6 +17,6 @@ declare global {
 
 export function onHomepageTrigger(e: GoogleAppsScript.Addons.EventObject) {
   const props = loadProps();
-  Log.debug(`Initial props: ${JSON.stringify(props)}`);
-  return buildHomepageCard(props.settings, e.commonEventObject.userLocale);
+  Log.debug('onHomepageTrigger: loaded props', { props });
+  return buildHomepageCard(props, e.commonEventObject.userLocale);
 }

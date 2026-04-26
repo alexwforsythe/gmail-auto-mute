@@ -23,8 +23,8 @@ export function archiveThreads() {
     ...(settings.excludeImportant ? ['-is:important'] : []),
     // The advanced search syntax accepts timestamps in seconds:
     // https://developers.google.com/workspace/gmail/api/guides/filtering
-    ...(state.lastEvaluationMs
-      ? [`after:${Math.floor(state.lastEvaluationMs / 1000)}`]
+    ...(state.lastRunMs
+      ? [`after:${Math.floor(state.lastRunMs / 1000)}`]
       : // If the trigger has never been run, limit the lookback window to avoid
         // scanning all threads.
         [`newer_than:${initialLookbackPeriod}`]),
@@ -40,7 +40,11 @@ export function archiveThreads() {
     );
   }
 
-  saveState({ lastEvaluationMs: nowMs });
+  saveState({
+    lastRunMs: nowMs,
+    lastRunArchivedCount: threads.length,
+    totalArchivedCount: state.totalArchivedCount + threads.length,
+  });
 
   return `Archived ${threads.length} threads`;
 }
