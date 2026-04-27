@@ -8,8 +8,7 @@ import {
   type Properties,
 } from './properties';
 
-const helpLink =
-  'https://github.com/alexwforsythe/gmail-auto-mute/blob/main/README.md';
+const helpLink = 'https://www.alexwforsythe.com/gmail-auto-mute/';
 const evaluationIntervalsHours = [1, 6, defaultEvaluationIntervalHours, 24];
 
 export function buildHomepageCard(
