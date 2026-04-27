@@ -9,16 +9,14 @@
 A Gmail add-on that truly mutes threads by auto-archiving direct replies on a
 schedule based on user-defined filters.
 
-## Background
-
-### ⚠️ Problem
+## 🫟 Problem
 
 I get a lot of emails from recruiters that I want to keep in case I
 need them later, so I move them to the "recruiters" label (add label + archive) to get them out of my
 inbox. Whenever the sender replies to one of those threads, it gets moved back
 to my inbox and I have to manually archive it again, which is annoying.
 
-### ✅ Solution
+## ✅ Solution
 
 This automatically archives new replies to archived threads on a schedule, based
 on user-defined filters:
@@ -33,9 +31,9 @@ on user-defined filters:
 ### ❓ Why can't I use a filter?
 
 When you add a label to a thread in Gmail, it actually applies to the most
-recent message instead of the thread itself. New messages in the thread
+recent message instead of the thread itself[^1]. New messages in the thread
 therefore don't inherit the label automatically, so a filter like this won't do
-anything:
+anything[^2][^3]:
 
 > If a new message has filter X, skip the inbox
 
@@ -43,13 +41,15 @@ In fact, new replies address directly to you will always move a thread back to
 the inbox, even if it's muted! So the only solution is to use Google Apps Script
 to automate the manual process of re-archiving these threads.
 
-More info:
+## Usage
 
-- <https://stackoverflow.com/questions/50394493/how-to-search-gmail-for-conversations-in-the-inbox-and-with-a-specific-label>
-- <https://developers.google.com/workspace/gmail/api/guides/labels#manage_labels_on_messages_threads>
-- <https://er4hn.info/blog/2024.10.26-gmail-labels/>
+> ℹ️ The first time the add-on runs—from your schedule or when you press "Run
+> now"—it will only clean up replies in the past 1 month. This is to avoid
+> errors when processing huge inboxes.
 
-## 📋 todo
+- [ ] @todo add some instructions / images
+
+## 📋 To do
 
 - [ ] handle errors
   - [ ] quota limits
@@ -57,20 +57,10 @@ More info:
   - [ ] email manually moved out?
   - [ ] changed to different label?
 
-## Contributing
+---
 
-Dependencies:
+[^1]: <https://developers.google.com/workspace/gmail/api/guides/labels#manage_labels_on_messages_threads>
 
-- [bun](https://bun.sh/)
+[^2]: <https://stackoverflow.com/questions/50394493/how-to-search-gmail-for-conversations-in-the-inbox-and-with-a-specific-label>
 
-Commands:
-
-| Description | Command         |
-| ----------- | --------------- |
-| Setup       | `bun install`   |
-| Build       | `bun run build` |
-| Push        | `bun run push`  |
-
-### Resources
-
-- [Build Google Apps Script with Any Bundler: Vite, Rollup, esbuild, webpack, and Bun](https://dev.to/wakita181009/build-google-apps-script-with-any-bundler-vite-rollup-esbuild-webpack-and-bun-2e73)
+[^3]: <https://er4hn.info/blog/2024.10.26-gmail-labels/>
