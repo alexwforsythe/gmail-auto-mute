@@ -1,7 +1,7 @@
 {
-  "name": "gmail-auto-mute",
+  "name": "gmail-quiet-labels",
   "version": "0.1.0",
-  "repository": "https://github.com/alexwforsythe/gmail-auto-mute",
+  "repository": "https://github.com/alexwforsythe/gmail-quiet-labels",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

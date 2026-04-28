@@ -4,8 +4,8 @@
   "runtimeVersion": "V8",
   "addOns": {
     "common": {
-      "name": "Auto Mute",
-      "logoUrl": "https://www.alexwforsythe.com/gmail-auto-mute/assets/images/archive-clock.svg"
+      "name": "QuietLabels",
+      "logoUrl": "https://www.alexwforsythe.com/gmail-auto-mute/assets/images/quiet-label-icon.svg"
     },
     "gmail": {
       "homepageTrigger": {

@@ -1,6 +1,5 @@
 import { archiveThreads } from './archiveThreads';
 import { buildHomepageCard } from './homepage';
-import Log from './logger';
 import { clearState, loadProps } from './properties';
 
 export function clearStateAction(e: GoogleAppsScript.Addons.EventObject) {
@@ -9,20 +8,8 @@ export function clearStateAction(e: GoogleAppsScript.Addons.EventObject) {
 }
 
 export function manualTriggerAction(e: GoogleAppsScript.Addons.EventObject) {
-  try {
-    const result = archiveThreads();
-    return refreshHomepage(e, result);
-  } catch (error) {
-    const msg = (
-      error instanceof Error
-        ? error
-        : new Error(
-            error instanceof Object ? JSON.stringify(error) : String(error),
-          )
-    ).message;
-    Log.error(`Failed to archive threads: ${msg}`, { error });
-    return refreshHomepage(e, msg);
-  }
+  const result = archiveThreads();
+  return refreshHomepage(e, result);
 }
 
 function refreshHomepage(

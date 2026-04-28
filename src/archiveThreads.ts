@@ -4,6 +4,23 @@ import { loadProps, saveState } from './properties';
 const initialLookbackPeriod = '1m';
 
 export function archiveThreads() {
+  try {
+    const result = archiveThreadsHelper();
+    return result;
+  } catch (error) {
+    const msg = (
+      error instanceof Error
+        ? error
+        : new Error(
+            error instanceof Object ? JSON.stringify(error) : String(error),
+          )
+    ).message;
+    Log.error(`Failed to archive threads: ${msg}`, { error });
+    return `Error: ${msg}`;
+  }
+}
+
+export function archiveThreadsHelper() {
   const nowMs = new Date().getTime();
   const props = loadProps();
 
@@ -15,7 +32,7 @@ export function archiveThreads() {
     Log.error('Missing label, skipping archiveThreads', {
       labelId: settings.labelId,
     });
-    return 'Error: No label selected';
+    throw new Error('No label selected');
   }
 
   const threads = getThreadsToArchive(label, [
@@ -36,10 +53,13 @@ export function archiveThreads() {
     const batch = threads.slice(i, i + 100);
     GmailApp.moveThreadsToArchive(batch);
     Log.info(
-      `Archived ${batch.length} threads, remaining: ${threads.length - i + 100}`,
+      `Archived ${batch.length} threads, remaining: ${threads.length - (i + batch.length)}`,
     );
   }
 
+  // @todo save last error to state and display in stats to user so can see
+  // issues with the timer trigger? good for debugging, but users shouldn't
+  // really be able to do anything about it
   saveState({
     lastRunMs: nowMs,
     lastRunArchivedCount: threads.length,
@@ -66,7 +86,13 @@ function getThreadsToArchive(
   queryParams: string[],
 ) {
   const inboxThreads = getThreads('in:inbox', ...queryParams);
-  const labelThreads = getThreads(`label:${label.getName()}`, ...queryParams);
+  Log.debug(`Found ${inboxThreads.length} inbox threads`);
+
+  const labelName = `${label.getName().replaceAll(' ', '-')}`;
+  const labelThreads = getThreads(`label:${labelName}`, ...queryParams);
+  Log.debug(
+    `Found ${labelThreads.length} threads with label "${label.getName()}"`,
+  );
   const labelThreadIdsSet = new Set(labelThreads.map((t) => t.getId()));
   return inboxThreads.filter((t) => labelThreadIdsSet.has(t.getId()));
 }

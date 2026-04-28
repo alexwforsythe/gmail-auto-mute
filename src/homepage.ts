@@ -8,7 +8,7 @@ import {
   type Properties,
 } from './properties';
 
-const helpLink = 'https://www.alexwforsythe.com/gmail-auto-mute/';
+const helpLink = 'https://www.alexwforsythe.com/gmail-quiet-labels/';
 const evaluationIntervalsHours = [1, 6, defaultEvaluationIntervalHours, 24];
 
 export function buildHomepageCard(

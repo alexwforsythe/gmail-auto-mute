@@ -1,5 +1,5 @@
 # Site metadata
-title: Gmail Auto Mute
+title: QuietLabels for Gmail
 author:
   name: Built by Alex Forsythe
 permalink: pretty
@@ -16,7 +16,7 @@ minima:
   social_links:
     - title: GitHub
       icon: github
-      url: https://github.com/alexwforsythe/gmail-auto-mute
+      url: https://github.com/alexwforsythe/gmail-quiet-labels
 google_analytics: G-WB3EH6CCYD
 
 titles_from_headings:
